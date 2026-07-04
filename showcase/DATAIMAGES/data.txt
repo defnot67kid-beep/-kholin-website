@@ -1,0 +1,3 @@
+natural_disaster.png
+image1.name="Natural Disaster"
+image1.description="Survive the chaos!"
