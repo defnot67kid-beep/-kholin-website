@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kholin - Roblox Extension</title>
-    <!-- Linking the CSS file -->
     <link rel="stylesheet" href="style.css">
-    <!-- FontAwesome for the social media icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -50,7 +48,6 @@
             <p class="hero-small">Feature availability may change as Roblox updates its platform.</p>
         </div>
         
-        <!-- Using the big Klogo for the hero image -->
         <div class="hero-right">
             <div class="hero-logo-wrapper">
                 <img src="Icons/Klogo.png" alt="Kholin Hero Logo" class="hero-logo-img">
@@ -130,7 +127,7 @@
         </div>
     </section>
 
-    <!-- 5. EXPERIENCE TRACKING (White Card) -->
+    <!-- 5. EXPERIENCE TRACKING CAROUSEL (White Card) -->
     <section class="feature-card-section">
         <div class="white-card">
             <div class="card-content">
@@ -139,24 +136,23 @@
                 
                 <h3 class="section-title">My Most Played</h3>
                 
-                <div class="game-list">
-                    <div class="game-item">
-                        <img src="https://tr.rbxcdn.com/30DAY-2022/2022-11-17/9c4030636c1a7deebda54f0c5d878f59/420x420.png" alt="Game 1">
-                        <p>Natural Disaster</p>
+                <div class="carousel-container">
+                    <!-- Left Arrow -->
+                    <button class="carousel-btn prev-btn" id="prevBtn">‹</button>
+
+                    <!-- The track holding all images -->
+                    <div class="carousel-track-container">
+                        <ul class="carousel-track">
+                            <!-- JavaScript will inject the images here automatically -->
+                        </ul>
                     </div>
-                    <div class="game-item">
-                        <img src="https://tr.rbxcdn.com/30DAY-2022/2022-11-17/39c347edb25fb38014de5906a1127cfb/420x420.png" alt="Game 2">
-                        <p>Draw it!</p>
-                    </div>
-                    <div class="game-item">
-                        <img src="https://tr.rbxcdn.com/180DAY-2022/2022-11-17/0e9687b3e20ef718e29d7d8a6340694c/420x420.png" alt="Game 3">
-                        <p>Work at a Pizza</p>
-                    </div>
-                    <div class="game-item">
-                        <img src="https://tr.rbxcdn.com/30DAY-2022/2022-11-17/fa9a937fb47b597f6ed492c6122db108/420x420.png" alt="Game 4">
-                        <p>Copyrighted...</p>
-                    </div>
+
+                    <!-- Right Arrow -->
+                    <button class="carousel-btn next-btn" id="nextBtn">›</button>
                 </div>
+
+                <!-- Dots indicator -->
+                <div class="carousel-indicators" id="indicators"></div>
             </div>
         </div>
     </section>
@@ -197,7 +193,6 @@
         </div>
     </footer>
 
-    <!-- Linking the JS file -->
     <script src="script.js"></script>
 </body>
 </html>
