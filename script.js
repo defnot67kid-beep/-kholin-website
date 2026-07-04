@@ -30,131 +30,157 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 5. THE CAROUSEL LOGIC
+    // 5. INFINITE DATA.TXT READER
     // ==========================================
     
-    const track = document.querySelector('.carousel-track');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const indicatorsContainer = document.getElementById('indicators');
+    const track = document.getElementById('cleanTrack');
+    const prevBtn = document.getElementById('cleanPrevBtn');
+    const nextBtn = document.getElementById('cleanNextBtn');
+    const indicators = document.getElementById('cleanIndicators');
 
-    // =========================================================================
-    // 🔥 EDIT YOUR IMAGE NAMES HERE! (They just need to be in the showcase/ folder)
-    // =========================================================================
-    const gamesData = [
-        { name: "Natural Disaster", file: "natural_disaster.png" },
-        { name: "Draw it!", file: "draw_it.png" },
-        { name: "Work at a Pizza", file: "pizza_place.png" },
-        { name: "Copyrighted...", file: "copyrighted.png" }
-    ];
-    // =========================================================================
+    async function loadGameData() {
+        try {
+            const response = await fetch('showcase/DATAIMAGES/data.txt');
+            const text = await response.text();
+            return parseDataText(text);
+        } catch (error) {
+            console.warn("data.txt not found. Using auto-generation.");
+            return []; 
+        }
+    }
 
+    // Parse text file into array
+    function parseDataText(text) {
+        const lines = text.split('\n').map(line => line.trim()).filter(line => line);
+        const games = [];
+        let currentGame = null;
+
+        for (const line of lines) {
+            if (line.endsWith('.png')) {
+                if (currentGame) games.push(currentGame);
+                currentGame = { file: line, name: line.replace('.png', ''), description: "" };
+            } else if (line.startsWith('image') && currentGame) {
+                if (line.includes('.name="')) {
+                    currentGame.name = line.split('.name="')[1].replace('"', '');
+                } else if (line.includes('.description=')) {
+                    currentGame.description = line.split('.description="')[1].replace('"', '');
+                }
+            }
+        }
+        if (currentGame) games.push(currentGame);
+        return games;
+    }
+
+    let gamesData = [];
     let currentIndex = 0;
 
-    // BUILD THE CAROUSEL HTML
-    function buildCarousel() {
-        track.innerHTML = ''; 
-        indicatorsContainer.innerHTML = ''; // Clear old dots
+    // Build the visual carousel
+    function buildCarousel(data) {
+        track.innerHTML = '';
+        indicators.innerHTML = '';
+        gamesData = data;
 
-        gamesData.forEach((game, index) => {
-            // Create List Item
-            const li = document.createElement('li');
-            li.className = 'carousel-slide';
+        if (data.length === 0) {
+            track.innerHTML = '<p style="color: #666; padding: 1rem;">Drop images into the showcase folder to see them here!</p>';
+            return;
+        }
 
-            // Create Image
+        data.forEach((game, index) => {
+            const div = document.createElement('div');
+            div.className = 'clean-item';
+
             const img = document.createElement('img');
-            // IMPORTANT: encodeURIComponent handles spaces in filenames safely
             img.src = `showcase/${encodeURIComponent(game.file)}`;
             img.alt = game.name;
-            img.draggable = false;
+            img.onerror = function() { this.src = 'https://placehold.co/160x160/333/fff?text=Image+Missing'; };
 
-            // Create Text
-            const p = document.createElement('p');
-            p.textContent = game.name;
+            const nameP = document.createElement('p');
+            nameP.className = 'name';
+            nameP.textContent = game.name;
 
-            li.appendChild(img);
-            li.appendChild(p);
-            track.appendChild(li);
+            const descP = document.createElement('p');
+            descP.className = 'desc';
+            descP.textContent = game.description;
 
-            // Create Dot Indicator
+            div.appendChild(img);
+            div.appendChild(nameP);
+            div.appendChild(descP);
+            track.appendChild(div);
+
+            // Infinite Dots
             const dot = document.createElement('div');
-            dot.className = 'dot';
+            dot.className = 'clean-dot';
             if (index === 0) dot.classList.add('active');
-            dot.dataset.index = index;
             dot.addEventListener('click', () => {
                 currentIndex = index;
-                updateCarousel();
+                scrollToIndex();
             });
-            indicatorsContainer.appendChild(dot);
+            indicators.appendChild(dot);
         });
 
-        updateCarousel();
+        updateArrows();
     }
 
-    // ANIMATION LOGIC
-    function updateCarousel() {
-        // If no images exist, stop the script
-        if (gamesData.length === 0) return;
+    // Scroll smoothly
+    function scrollToIndex() {
+        if(gamesData.length === 0) return;
+        const itemWidth = 160 + 19.2; 
+        const target = Math.min(currentIndex, gamesData.length - 1);
+        track.scrollTo({ left: target * itemWidth, behavior: 'smooth' });
+        updateDots();
+        updateArrows();
+    }
 
-        const slideWidth = 160 + 24; // 160px width + 24px gap (1.5rem)
-        const containerWidth = document.querySelector('.carousel-track-container').offsetWidth;
-        
-        // Calculate how many items fit on screen
-        const visibleItems = Math.floor(containerWidth / slideWidth);
-        const maxIndex = gamesData.length - visibleItems;
-
-        // Clamp index so we don't go past the start or end
-        if (currentIndex < 0) currentIndex = 0;
-        if (currentIndex > maxIndex) currentIndex = maxIndex;
-
-        // Move the track
-        const amountToMove = -(currentIndex * slideWidth);
-        track.style.transform = `translateX(${amountToMove}px)`;
-
-        // Update Dots
-        document.querySelectorAll('.dot').forEach((dot, index) => {
-            dot.classList.toggle('active', index === currentIndex);
+    function updateDots() {
+        document.querySelectorAll('.clean-dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentIndex);
         });
     }
 
-    // BUTTON EVENTS
-    nextBtn.addEventListener('click', () => {
-        // If we are at the end, loop back to start
-        const containerWidth = document.querySelector('.carousel-track-container').offsetWidth;
-        const slideWidth = 160 + 24;
-        const visibleItems = Math.floor(containerWidth / slideWidth);
-        const maxIndex = gamesData.length - visibleItems;
+    function updateArrows() {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        prevBtn.style.opacity = track.scrollLeft <= 0 ? '0.5' : '1';
+        nextBtn.style.opacity = track.scrollLeft >= maxScroll - 5 ? '0.5' : '1';
+    }
 
-        if (currentIndex >= maxIndex) {
-            currentIndex = 0; // Loop back to start
-        } else {
-            currentIndex++;
-        }
-        updateCarousel();
-    });
-
+    // Arrow Listeners (Infinite safe)
     prevBtn.addEventListener('click', () => {
-        const containerWidth = document.querySelector('.carousel-track-container').offsetWidth;
-        const slideWidth = 160 + 24;
-        const visibleItems = Math.floor(containerWidth / slideWidth);
-        const maxIndex = gamesData.length - visibleItems;
-
-        if (currentIndex <= 0) {
-            currentIndex = maxIndex; // Loop to end
-        } else {
+        if (currentIndex > 0) {
             currentIndex--;
+            scrollToIndex();
         }
-        updateCarousel();
     });
 
-    // Handle resizing the window (recalculate visible items)
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(updateCarousel, 250);
+    nextBtn.addEventListener('click', () => {
+        if (currentIndex < gamesData.length - 1) {
+            currentIndex++;
+            scrollToIndex();
+        }
     });
 
-    // START THE CAROUSEL
-    buildCarousel();
+    // Sync dots/arrows with manual scrolling
+    track.addEventListener('scroll', () => {
+        const itemWidth = 160 + 19.2;
+        const newIndex = Math.round(track.scrollLeft / itemWidth);
+        if (newIndex !== currentIndex && newIndex >= 0 && newIndex < gamesData.length) {
+            currentIndex = newIndex;
+            updateDots();
+        }
+        updateArrows();
+    });
+
+    // INIT: Read data.txt then build
+    loadGameData().then(data => {
+        // If data.txt is empty, auto-generate from showcase folder (optional future update)
+        // For now, just build what we read
+        if(data.length === 0) {
+            // Fallback if no data.txt
+            data = [
+                { file: "image1.png", name: "Image 1", description: "" },
+                { file: "image2.png", name: "Image 2", description: "" }
+            ];
+        }
+        buildCarousel(data);
+    });
 
 });

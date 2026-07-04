@@ -127,32 +127,26 @@
         </div>
     </section>
 
-    <!-- 5. EXPERIENCE TRACKING CAROUSEL (White Card) -->
+    <!-- 5. INFINITE EXPERIENCE CAROUSEL -->
     <section class="feature-card-section">
-        <div class="white-card">
+        <div class="white-card clean-card">
             <div class="card-content">
                 <h1 class="big-title">Experience Time Tracking</h1>
                 <p class="big-sub">Track how long you've played an experience!</p>
                 
                 <h3 class="section-title">My Most Played</h3>
                 
-                <div class="carousel-container">
-                    <!-- Left Arrow -->
-                    <button class="carousel-btn prev-btn" id="prevBtn">‹</button>
-
-                    <!-- The track holding all images -->
-                    <div class="carousel-track-container">
-                        <ul class="carousel-track">
-                            <!-- JavaScript will inject the images here automatically -->
-                        </ul>
+                <div class="clean-carousel-wrapper">
+                    <button class="clean-arrow clean-prev" id="cleanPrevBtn">‹</button>
+                    
+                    <div class="clean-scroll-area" id="cleanTrack">
+                        <!-- JavaScript injects items here -->
                     </div>
-
-                    <!-- Right Arrow -->
-                    <button class="carousel-btn next-btn" id="nextBtn">›</button>
+                    
+                    <button class="clean-arrow clean-next" id="cleanNextBtn">›</button>
                 </div>
-
-                <!-- Dots indicator -->
-                <div class="carousel-indicators" id="indicators"></div>
+                
+                <div class="clean-indicators" id="cleanIndicators"></div>
             </div>
         </div>
     </section>
