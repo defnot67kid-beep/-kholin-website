@@ -12,18 +12,19 @@ body {
     overflow-x: hidden;
 }
 
-/* --- NAVBAR (FULLY TRANSPARENT, NO BACKGROUND) --- */
+/* --- NAVBAR (ACTUALLY TRANSPARENT - NO BLUR) --- */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background: transparent !important; /* Forces no background */
+    background: transparent !important;
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: none; /* Removes any shadows */
+    box-shadow: none !important;
     width: 100%;
+    /* IMPORTANT: REMOVED backdrop-filter completely */
 }
 
 .nav-left {
@@ -35,7 +36,6 @@ body {
 .nav-logo {
     height: 32px;
     width: auto;
-    /* Make the logo box dark like RoPro */
     background: #1d1f24; 
     padding: 4px;
     border-radius: 8px;
@@ -53,7 +53,6 @@ body {
     flex: 1;
     justify-content: center;
     align-items: center;
-    /* Removed the roundness, it's a straight line now */
     border-radius: 0; 
     background: transparent;
 }
@@ -64,19 +63,18 @@ body {
     font-weight: 500;
     font-size: 0.95rem;
     transition: 0.2s;
-    padding: 0.5rem 2.5rem; /* Exactly like RoPro's rectangular button */
-    border-radius: 8px; /* RoPro uses slightly rounded rectangles, not pills */
+    padding: 0.5rem 2.5rem;
+    border-radius: 8px; 
 }
 
 .nav-item:hover {
     color: #ffffff;
 }
 
-/* The exact RoPro button shape */
 .nav-item.active {
     background-color: #0ea5e9;
     color: white;
-    border-radius: 8px; /* Rectangular with slight curves */
+    border-radius: 8px;
 }
 
 .nav-right {
