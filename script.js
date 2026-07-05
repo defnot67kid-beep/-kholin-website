@@ -14,23 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Changelog feature coming soon!');
     });
 
-    // 3. "Show More Features" Toggle
-    document.querySelectorAll('.btn-features').forEach(btn => {
-        btn.addEventListener('click', function() {
-            this.innerText = this.innerText === "Show More Features" ? "Show Less" : "Show More Features";
-        });
-    });
-
-    // 4. Subscription Buttons
-    document.querySelectorAll('.btn-subscribe').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Redirecting to subscription checkout...');
-        });
-    });
-
     // ==========================================
-    // 5. INFINITE DATA.TXT READER
+    // 3. INFINITE AUTO-DETECT CAROUSEL
     // ==========================================
     
     const track = document.getElementById('cleanTrack');
@@ -38,61 +23,80 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn = document.getElementById('cleanNextBtn');
     const indicators = document.getElementById('cleanIndicators');
 
-    async function loadGameData() {
+    // EDIT THIS LIST to add new images
+    const IMAGE_LIST = [
+        "natural_disaster.png",
+        "draw_it.png",
+        "pizza_place.png",
+        "copyrighted.png"
+    ];
+
+    let gamesData = [];
+    let currentIndex = 0;
+
+    // Attempt to load data.txt for extra details
+    async function loadMetadata() {
         try {
             const response = await fetch('showcase/DATAIMAGES/data.txt');
             const text = await response.text();
             return parseDataText(text);
         } catch (error) {
-            console.warn("data.txt not found. Using auto-generation.");
             return []; 
         }
     }
 
-    // Parse text file into array
     function parseDataText(text) {
         const lines = text.split('\n').map(line => line.trim()).filter(line => line);
-        const games = [];
-        let currentGame = null;
+        const metaMap = {};
+        let currentKey = null;
 
         for (const line of lines) {
             if (line.endsWith('.png')) {
-                if (currentGame) games.push(currentGame);
-                currentGame = { file: line, name: line.replace('.png', ''), description: "" };
-            } else if (line.startsWith('image') && currentGame) {
+                currentKey = line;
+                metaMap[currentKey] = { file: currentKey, name: currentKey.replace('.png', '').replace(/_/g, ' '), description: "" };
+            } else if (line.startsWith('image') && currentKey) {
                 if (line.includes('.name="')) {
-                    currentGame.name = line.split('.name="')[1].replace('"', '');
+                    metaMap[currentKey].name = line.split('.name="')[1].replace('"', '');
                 } else if (line.includes('.description=')) {
-                    currentGame.description = line.split('.description="')[1].replace('"', '');
+                    metaMap[currentKey].description = line.split('.description="')[1].replace('"', '');
                 }
             }
         }
-        if (currentGame) games.push(currentGame);
-        return games;
+        return metaMap;
     }
 
-    let gamesData = [];
-    let currentIndex = 0;
-
-    // Build the visual carousel
-    function buildCarousel(data) {
+    function buildCarousel() {
         track.innerHTML = '';
         indicators.innerHTML = '';
-        gamesData = data;
+        
+        gamesData = IMAGE_LIST.map(filename => {
+            if (metadataMap[filename]) {
+                return metadataMap[filename];
+            } else {
+                let autoName = filename.replace('.png', '').replace(/_/g, ' ');
+                autoName = autoName.replace(/\b\w/g, l => l.toUpperCase());
+                
+                return {
+                    file: filename,
+                    name: autoName,
+                    description: ""
+                };
+            }
+        });
 
-        if (data.length === 0) {
-            track.innerHTML = '<p style="color: #666; padding: 1rem;">Drop images into the showcase folder to see them here!</p>';
+        if (gamesData.length === 0) {
+            track.innerHTML = '<p style="color: #666; padding: 1rem;">Add images to the showcase folder and update IMAGE_LIST in script.js</p>';
             return;
         }
 
-        data.forEach((game, index) => {
+        gamesData.forEach((game, index) => {
             const div = document.createElement('div');
             div.className = 'clean-item';
 
             const img = document.createElement('img');
             img.src = `showcase/${encodeURIComponent(game.file)}`;
             img.alt = game.name;
-            img.onerror = function() { this.src = 'https://placehold.co/160x160/333/fff?text=Image+Missing'; };
+            img.onerror = function() { this.src = 'https://placehold.co/160x160/555/fff?text=Missing+Image'; };
 
             const nameP = document.createElement('p');
             nameP.className = 'name';
@@ -107,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
             div.appendChild(descP);
             track.appendChild(div);
 
-            // Infinite Dots
             const dot = document.createElement('div');
             dot.className = 'clean-dot';
             if (index === 0) dot.classList.add('active');
@@ -121,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateArrows();
     }
 
-    // Scroll smoothly
     function scrollToIndex() {
         if(gamesData.length === 0) return;
         const itemWidth = 160 + 19.2; 
@@ -143,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
         nextBtn.style.opacity = track.scrollLeft >= maxScroll - 5 ? '0.5' : '1';
     }
 
-    // Arrow Listeners (Infinite safe)
     prevBtn.addEventListener('click', () => {
         if (currentIndex > 0) {
             currentIndex--;
@@ -158,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Sync dots/arrows with manual scrolling
     track.addEventListener('scroll', () => {
         const itemWidth = 160 + 19.2;
         const newIndex = Math.round(track.scrollLeft / itemWidth);
@@ -169,18 +169,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateArrows();
     });
 
-    // INIT: Read data.txt then build
-    loadGameData().then(data => {
-        // If data.txt is empty, auto-generate from showcase folder (optional future update)
-        // For now, just build what we read
-        if(data.length === 0) {
-            // Fallback if no data.txt
-            data = [
-                { file: "image1.png", name: "Image 1", description: "" },
-                { file: "image2.png", name: "Image 2", description: "" }
-            ];
-        }
-        buildCarousel(data);
+    let metadataMap = {}; 
+
+    loadMetadata().then(meta => {
+        metadataMap = meta;
+        buildCarousel();
     });
 
 });
