@@ -18,11 +18,15 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 0.8rem 2rem;
-    background-color: #1d1f24;
+    /* CHANGED TO TRANSPARENT */
+    background: transparent; 
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    /* Removed the shadow so it blends in */
+    box-shadow: none; 
+    /* Optional: Adds a subtle blur so if the page scrolls, text behind isn't super sharp */
+    backdrop-filter: blur(8px); 
 }
 
 .nav-left {
@@ -185,7 +189,7 @@ body {
 
 /* --- FOOTER --- */
 .footer {
-    background: #1d1f24;
+    background: transparent; /* Footer is also transparent now */
     padding: 4rem 2rem;
     margin-top: 4rem;
     border-top: 1px solid rgba(255,255,255,0.1);
