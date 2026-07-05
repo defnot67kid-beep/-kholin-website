@@ -12,69 +12,64 @@ body {
     overflow-x: hidden;
 }
 
-/* --- NAVBAR (ACTUALLY TRANSPARENT - NO BLUR) --- */
+/* --- NAVBAR (RoPro Style) --- */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: 0.8rem 2rem;
     background: transparent !important;
     position: sticky;
     top: 0;
     z-index: 1000;
     box-shadow: none !important;
     width: 100%;
-    /* IMPORTANT: REMOVED backdrop-filter completely */
+    gap: 2rem;
 }
 
 .nav-left {
     display: flex;
     align-items: center;
-    gap: 10px;
 }
 
 .nav-logo {
-    height: 32px;
+    height: 36px; /* Slightly bigger to match RoPro's weight */
     width: auto;
-    background: #1d1f24; 
-    padding: 4px;
-    border-radius: 8px;
-}
-
-.nav-brand {
-    font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
+    /* Removed the dark background box and padding */
+    background: transparent; 
+    padding: 0;
 }
 
 .nav-center {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
     flex: 1;
     justify-content: center;
     align-items: center;
-    border-radius: 0; 
-    background: transparent;
 }
 
 .nav-item {
-    color: #d1d5db;
+    color: #ffffff;
     text-decoration: none;
     font-weight: 500;
     font-size: 0.95rem;
     transition: 0.2s;
-    padding: 0.5rem 2.5rem;
-    border-radius: 8px; 
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px; /* Makes it a perfect pill shape */
 }
 
 .nav-item:hover {
-    color: #ffffff;
+    opacity: 0.8;
 }
 
+/* The exact RoPro blue pill button */
 .nav-item.active {
     background-color: #0ea5e9;
     color: white;
-    border-radius: 8px;
+    /* Flex auto makes it stretch slightly to look more like a filled bar */
+    flex: 1; 
+    max-width: 200px;
+    text-align: center;
 }
 
 .nav-right {
