@@ -12,7 +12,7 @@ body {
     overflow-x: hidden;
 }
 
-/* --- NAVBAR (RoPro Style) --- */
+/* --- NAVBAR --- */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -35,9 +35,8 @@ body {
 .nav-logo {
     height: 36px;
     width: auto;
-    /* Make the logo sit inside a dark pill shape, just like RoPro */
     background: #1d1f24; 
-    padding: 4px 12px 4px 4px; /* Extra padding on right for the text */
+    padding: 4px 12px 4px 4px;
     border-radius: 50px;
 }
 
@@ -49,36 +48,30 @@ body {
     align-items: center;
 }
 
-/* --- THE DARK PILL BUTTONS (EXACTLY LIKE YOUR SCREENSHOT) --- */
+/* --- DARK PILL BUTTONS --- */
 .nav-item {
     color: #ffffff;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
     padding: 0.6rem 2rem;
-    border-radius: 50px; /* Perfect pill shape */
-    transition: all 0.2s ease; /* Smooth hover animation */
-    
-    /* IMPORTANT: ALL buttons get the dark background */
+    border-radius: 50px; 
+    transition: all 0.2s ease; 
     background-color: #1d1f24; 
 }
 
-/* --- HOVER EFFECTS --- */
-/* When hovering over an inactive (dark) button */
 .nav-item:not(.active):hover {
-    background-color: #2d3038; /* Turns lighter gray on hover */
+    background-color: #2d3038; 
     transform: translateY(-1px);
 }
 
-/* When hovering over the active (blue) Home button */
 .nav-item.active:hover {
-    background-color: #0284c7; /* Darker blue on hover */
+    background-color: #0284c7; 
     transform: scale(1.02);
 }
 
-/* --- THE ACTIVE BLUE BUTTON --- */
 .nav-item.active {
-    background-color: #0ea5e9; /* Bright Blue */
+    background-color: #0ea5e9;
     color: white;
 }
 
@@ -163,14 +156,17 @@ body {
     font-weight: 800;
     line-height: 0.9;
     letter-spacing: -3px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
 }
 
 .hero-subtitle {
     font-size: 2rem;
     font-weight: 600;
-    color: #d1d5db;
-    margin-bottom: 2rem;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    /* Makes the text pop slightly more */
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    letter-spacing: 0.5px;
 }
 
 .hero-small {
